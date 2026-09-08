@@ -1,0 +1,58 @@
+public class MultiplyWithoutStar {
+    
+    // 1 способ - через for
+    public static int multiplyByAddition(int a, int b) {
+        int result = 0;
+        for (int i = 0; i < b; i++) {
+            result = result + a;
+        }
+        return result;
+    }
+    
+    // 2 способ - через while
+    public static int multiplyByLoop(int a, int b) {
+        int result = 0;
+        while (b > 0) {
+            result = result + a;
+            b--;
+        }
+        return result;
+    }
+    
+    // 3 способ - русский крестьянский метод
+    public static int multiplyByShift(int a, int b) {
+        int result = 0;
+        while (b > 0) {
+            if (b % 2 == 1) {
+                result = result + a;
+            }
+            a = a * 2;
+            b = b / 2;
+        }
+        return result;
+    }
+    
+    // 4 способ - через логарифмы
+    public static int multiplyByLog(int a, int b) {
+        if (a == 0 || b == 0) return 0;
+        double result = Math.exp(Math.log(a) + Math.log(b));
+        return (int) Math.round(result);
+    }
+    
+    public static void main(String[] args) {
+        int a = 6;
+        int b = 7;
+        
+        System.out.println("1. " + multiplyByAddition(a, b));
+        System.out.println("2. " + multiplyByLoop(a, b));
+        System.out.println("3. " + multiplyByShift(a, b));
+        System.out.println("4. " + multiplyByLog(a, b));
+        
+        // 5 способ - прямо в main
+        int result = 0;
+        for (int i = 0; i < b; i++) {
+            result = result + a;
+        }
+        System.out.println("5. " + result);
+    }
+}
