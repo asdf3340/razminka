@@ -1,138 +1,108 @@
 // Подключаем класс Thread для работы с потоками
 public class RabbitAndTurtle {
-    // Длина дистанции
-    // Когда животное достигает этого количества метров, его поток завершает работу
-    private static final int DISTANCE = 30;
+   
+    
+    private static final int DISTANCE = 40;  // Длина дистанции.Животное достигает это количество метров, и его поток завершает работу
     public static void main(String[] args) throws InterruptedException {
-        // Создаём поток для Кролика
-        // 8 — начальный приоритет потока
-        AnimalThread rabbit = new AnimalThread("Кролик", 8);
-        // Создаём поток для Черепахи
-        // Начальный приоритет тоже равен 8
-        AnimalThread turtle = new AnimalThread("Черепаха", 8);
-        // Выводим сообщение о начале соревнования.
-        System.out.println("Старт!");
-        // Запускаем поток Кролика
-        // После этого автоматически начнёт выполняться метод run()
-        rabbit.start();
-        // Запускаем поток Черепахи
-        turtle.start();
-        //Цикл работает до тех пор, пока оба животных не закончили гонку
-        while (rabbit.isAlive() && turtle.isAlive()) {
+        AnimalThread rabbit = new AnimalThread("Кролик", 8); // Создаём поток для Кролика, 8 — начальный приоритет потока
+        AnimalThread turtle = new AnimalThread("Черепаха", 8);// Создаём поток для Черепахи. Начальный приоритет тоже равен 8
+        
+        System.out.println("Старт!");// Выводим сообщение о начале соревнования.
+
+        rabbit.start();// Запускаем поток Кролика, автоматически начнёт выполняться метод run()
+        turtle.start(); // Запускаем поток Черепахи
+        
+        while (rabbit.isAlive() && turtle.isAlive()) //Цикл работает до тех пор, пока оба животных не закончили гонку
+        {
             // Главный поток делает паузу 200 миллисекунд
             // Это нужно для того, чтобы не проверять положение животных слишком часто
             Thread.sleep(200);
-            //Проверяем, кто сейчас впереди
-             //Если Кролик прошёл больше метров, значит, Черепаха отстаёт
-            if (rabbit.getMeters() > turtle.getMeters()) {
-                // Уменьшаем приоритет Кролика
-                rabbit.setPriority(Thread.MIN_PRIORITY);
-                // Увеличиваем приоритет Черепахи, на отстаёт и должна догнать Кролика
-                turtle.setPriority(Thread.MAX_PRIORITY);
-                // Выводим сообщение на экран
-                System.out.println(
-                        "Черепаха отстаёт. Ей повышен приоритет."
-                );
+            
+            if (rabbit.getMeters() > turtle.getMeters()) //Проверяем, кто сейчас впереди. Если Кролик прошёл больше метров, значит, Черепаха отстаёт
+            {
+                rabbit.setPriority(Thread.MIN_PRIORITY);// Уменьшение приоритета кролика
+                turtle.setPriority(Thread.MAX_PRIORITY);// Увеличение приоритета Черепахи, она отстаёт и должна догнать Кролика
+                
+                System.out.println("Черепаха отстаёт. Ей повышен приоритет.");
             }
-            //Если Черепаха прошла больше метров, значит, Кролик сейчас отстаёт
-            else if (turtle.getMeters() > rabbit.getMeters()) {
-                // Уменьшаем приоритет Черепахи, потому что она находится впереди
-                turtle.setPriority(Thread.MIN_PRIORITY);
-                // Увеличиваем приоритет Кролика, чтобы он смог догнать Черепаху
-                rabbit.setPriority(Thread.MAX_PRIORITY);
-                // Выводим сообщение на экран
-                System.out.println(
-                        "Кролик отстаёт. Ему повышен приоритет."
-                );
+            
+            else if (turtle.getMeters() > rabbit.getMeters()) //Если Черепаха прошла больше метров, значит, Кролик сейчас отстаёт
+            {
+                turtle.setPriority(Thread.MIN_PRIORITY);// Уменьшение приоритета Черепахи, потому что она находится впереди
+                rabbit.setPriority(Thread.MAX_PRIORITY);// Увеличение приоритет Кролика, чтобы он смог догнать Черепаху
+                
+                System.out.println("Кролик отстаёт. Ему повышен приоритет.");
             }
-            //Показываем текущее положение обоих животных
-            System.out.println(
-                    rabbit.getThreadName()
-                            + ": " + rabbit.getMeters() + " м; "
-                            + turtle.getThreadName()
-                            + ": " + turtle.getMeters() + " м"
-            );
+            System.out.println(rabbit.getThreadName() + ": " + rabbit.getMeters() + " м; " + turtle.getThreadName() + ": " + turtle.getMeters() + " м");// текущее положение обоих животных
         }
-        //Метод join() заставляет главный поток дождаться полного завершения потока Кролика
-        rabbit.join();
-        //Также ждём завершения потока Черепахи
-        turtle.join();
-        // Сообщаем, что гонка завершилась
-        System.out.println("\nФиниш!");
+        
+        rabbit.join();//Метод join() заставляет главный поток дождаться полного завершения потока Кролика
+        turtle.join();//Также ждём завершения потока Черепахи
+        System.out.println("\nФиниш!");//гонка завершилась
 
-        //Определяем победителя, если Кролик достиг дистанции, выводим, что победил Кролик
-        if (rabbit.getMeters() >= DISTANCE) {
+        
+        if (rabbit.getMeters() >= DISTANCE) //Определение победителя, если Кролик достиг дистанции - победил Кролик
+        {
             System.out.println("Победил Кролик!");
         }
-        //Если дистанцию достигла Черепаха, значит, победила Черепаха
-        else {
-            System.out.println("Победила Черепаха!");
+        else
+        {
+            System.out.println("Победила Черепаха!");//Если дистанцию достигла Черепаха, значит, победила Черепаха
         }
     }
-    // Создаём класс AnimalThread
-    static class AnimalThread extends Thread {
-        // Переменная хранит имя животного
+   
+    static class AnimalThread extends Thread // создание класса AnimalThread
+        {
+        // Переменные для хранения имени животного и начального приоритета потока
         private String threadName;
-        // Переменная хранит начальный приоритет потока
         private int threadPriority;
-        //Количество метров, которое прошло животное
-        //volatile означает, что значение переменной может изменяться одним потоком и читаться другим потоком
-        private volatile int meters;
-         //Конструктор класса
-         //Он получает имя животного и его приоритет
-        public AnimalThread(String threadName, int threadPriority) {
-            // Запоминаем имя животного
+        private volatile int meters; //Количество метров, которое прошло животное (volatile означает, что значение переменной может изменяться одним потоком и читаться другим потоком)
+        public AnimalThread(String threadName, int threadPriority) //конструктор
+            {
             this.threadName = threadName;
-            // Запоминаем приоритет животного
             this.threadPriority = threadPriority;
-            // В начале гонки животное прошло 0 метров
             this.meters = 0;
-            //Устанавливаем имя потока
-            setName(threadName);
-            //Устанавливаем приоритет потока
-            setPriority(threadPriority);
+            
+            setName(threadName);// имя потока
+            setPriority(threadPriority);//приоритет потока
         }
         @Override
-        public void run() {
-            //Цикл продолжается до тех пор, пока животное не пройдёт всю дистанцию
-            while (meters < DISTANCE) {
-                // Животное проходит ещё один метр
-                meters++;
-                // Выводим на экран имя животного и пройденное расстояние
-                System.out.println(
-                        threadName + " пробежал "
-                                + meters + " м"
-                );
-                //Обрабатываем возможное прерывание потока
-                try {
-                    // Если у потока максимальный приоритет, животное делает маленькую паузу, из-за этого оно движется быстрее
-                    if (getPriority() == Thread.MAX_PRIORITY) {
-                        //Пауза 50 миллисекунд.
-                        Thread.sleep(50);
+        public void run()
+        {
+            
+            while (meters < DISTANCE) //Цикл продолжается до тех пор, пока животное не пройдёт всю дистанцию
+                {
+                meters++;// Животное проходит ещё один метр
+                System.out.println(threadName + " пробежал "+ meters + " м");//  имя животного и им пройденное расстояние
+               
+                try  //Обработка возможного прерывания потока
+                {
+                   
+                    if (getPriority() == Thread.MAX_PRIORITY)  // Если у потока максимальный приоритет, животное делает маленькую паузу, из-за этого оно движется быстрее
+                    {
+                        Thread.sleep(50);//пауза
                     }
-                    // Если приоритет обычный или минимальный, животное делает большую паузу, из-за этого оно движется медленнее
-                    else {
-                        // Пауза 150 миллисекунд
-                        Thread.sleep(150);
+                    
+                    else // Если приоритет обычный или минимальный, животное делает большую паузу, из-за этого оно движется медленнее
+                    {
+                        Thread.sleep(150);//пауза
                     }
                 }
-                //Этот блок выполняется, если поток был прерван
-                catch (InterruptedException e) {
-                    // Сообщаем, что поток остановлен
-                    System.out.println(
-                            threadName + " остановлен."
-                    );
+                catch (InterruptedException e) //если блок прерывается, то выполянется catch
+                    {
+                    
+                    System.out.println(threadName + " остановлен.");
                     return;
                 }
             }
         }
 
-        // Метод возвращает имя животного
-        public String getThreadName() {
+        public String getThreadName() //получение имени животного
+        {
             return threadName;
         }
-        //Метод возвращает количество метров, которое прошло животное
-        public int getMeters() {
+        public int getMeters() //получение кол-ва метров, провденное животным
+        {
             return meters;
         }
     }
