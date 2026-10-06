@@ -1,44 +1,43 @@
-// Подключаем класс Thread для работы с потоками
+
 public class RabbitAndTurtle {
    
     
-    private static final int DISTANCE = 40;  // Длина дистанции.Животное достигает это количество метров, и его поток завершает работу
+    private static final int DISTANCE = 40; 
     public static void main(String[] args) throws InterruptedException {
-        AnimalThread rabbit = new AnimalThread("Кролик", 8); // Создаём поток для Кролика, 8 — начальный приоритет потока
-        AnimalThread turtle = new AnimalThread("Черепаха", 8);// Создаём поток для Черепахи. Начальный приоритет тоже равен 8
+        AnimalThread rabbit = new AnimalThread("Кролик", 8); 
+        AnimalThread turtle = new AnimalThread("Черепаха", 8);
         
-        System.out.println("Старт!");// Выводим сообщение о начале соревнования.
+        System.out.println("Старт!");
 
-        rabbit.start();// Запускаем поток Кролика, автоматически начнёт выполняться метод run()
-        turtle.start(); // Запускаем поток Черепахи
+        rabbit.start();
+        turtle.start(); 
         
         while (rabbit.isAlive() && turtle.isAlive()) //Цикл работает до тех пор, пока оба животных не закончили гонку
         {
-            // Главный поток делает паузу 200 миллисекунд
-            // Это нужно для того, чтобы не проверять положение животных слишком часто
+            
             Thread.sleep(200);
             
             if (rabbit.getMeters() > turtle.getMeters()) //Проверяем, кто сейчас впереди. Если Кролик прошёл больше метров, значит, Черепаха отстаёт
             {
-                rabbit.setPriority(Thread.MIN_PRIORITY);// Уменьшение приоритета кролика
-                turtle.setPriority(Thread.MAX_PRIORITY);// Увеличение приоритета Черепахи, она отстаёт и должна догнать Кролика
+                rabbit.setPriority(Thread.MIN_PRIORITY);
+                turtle.setPriority(Thread.MAX_PRIORITY);
                 
                 System.out.println("Черепаха отстаёт. Ей повышен приоритет.");
             }
             
             else if (turtle.getMeters() > rabbit.getMeters()) //Если Черепаха прошла больше метров, значит, Кролик сейчас отстаёт
             {
-                turtle.setPriority(Thread.MIN_PRIORITY);// Уменьшение приоритета Черепахи, потому что она находится впереди
-                rabbit.setPriority(Thread.MAX_PRIORITY);// Увеличение приоритет Кролика, чтобы он смог догнать Черепаху
+                turtle.setPriority(Thread.MIN_PRIORITY);
+                rabbit.setPriority(Thread.MAX_PRIORITY);
                 
                 System.out.println("Кролик отстаёт. Ему повышен приоритет.");
             }
             System.out.println(rabbit.getThreadName() + ": " + rabbit.getMeters() + " м; " + turtle.getThreadName() + ": " + turtle.getMeters() + " м");// текущее положение обоих животных
         }
         
-        rabbit.join();//Метод join() заставляет главный поток дождаться полного завершения потока Кролика
-        turtle.join();//Также ждём завершения потока Черепахи
-        System.out.println("\nФиниш!");//гонка завершилась
+        rabbit.join();//Метод join() заставляет главный поток дождаться полного завершения потока 
+        turtle.join();
+        System.out.println("\nФиниш!");
 
         
         if (rabbit.getMeters() >= DISTANCE) //Определение победителя, если Кролик достиг дистанции - победил Кролик
@@ -53,17 +52,16 @@ public class RabbitAndTurtle {
    
     static class AnimalThread extends Thread // создание класса AnimalThread
         {
-        // Переменные для хранения имени животного и начального приоритета потока
+        
         private String threadName;
         private int threadPriority;
-        private volatile int meters; //Количество метров, которое прошло животное (volatile означает, что значение переменной может изменяться одним потоком и читаться другим потоком)
-        public AnimalThread(String threadName, int threadPriority) //конструктор
-            {
+        private volatile int meters; 
+        public AnimalThread(String threadName, int threadPriority) 
             this.threadName = threadName;
             this.threadPriority = threadPriority;
             this.meters = 0;
             
-            setName(threadName);// имя потока
+            setName(threadName);
             setPriority(threadPriority);//приоритет потока
         }
         @Override
@@ -72,20 +70,20 @@ public class RabbitAndTurtle {
             
             while (meters < DISTANCE) //Цикл продолжается до тех пор, пока животное не пройдёт всю дистанцию
                 {
-                meters++;// Животное проходит ещё один метр
-                System.out.println(threadName + " пробежал "+ meters + " м");//  имя животного и им пройденное расстояние
+                meters++;
+                System.out.println(threadName + " пробежал "+ meters + " м");
                
                 try  //Обработка возможного прерывания потока
                 {
                    
-                    if (getPriority() == Thread.MAX_PRIORITY)  // Если у потока максимальный приоритет, животное делает маленькую паузу, из-за этого оно движется быстрее
+                    if (getPriority() == Thread.MAX_PRIORITY)  
                     {
-                        Thread.sleep(50);//пауза
+                        Thread.sleep(50);
                     }
                     
-                    else // Если приоритет обычный или минимальный, животное делает большую паузу, из-за этого оно движется медленнее
+                    else 
                     {
-                        Thread.sleep(150);//пауза
+                        Thread.sleep(150);
                     }
                 }
                 catch (InterruptedException e) //если блок прерывается, то выполянется catch
