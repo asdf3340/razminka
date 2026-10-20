@@ -18,7 +18,8 @@ public class Main
 
         int total = bought;
         int wrappers = bought;
-        while (wrappers >= wrap) {
+        while (wrappers >= wrap) 
+        {
             int newChocolates = wrappers / wrap;
             total += newChocolates;
             wrappers = wrappers % wrap + newChocolates;
